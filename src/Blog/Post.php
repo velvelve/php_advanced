@@ -5,17 +5,36 @@ namespace GeekBrains\LevelTwo\Blog;
 class Post
 {
 
-    private int $id;
+    private UUID $uuid;
     private User $author;
     private string $title;
     private string $text;
 
-    public function __construct(int $id, User $author, string $title, string $text)
+    public function __construct(UUID $uuid, User $author, string $title, string $text)
     {
-        $this->id = $id;
+        $this->uuid = $uuid;
         $this->author = $author;
         $this->title = $title;
         $this->text = $text;
+    }
+
+
+    /**
+     * Get the value of uuid
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * Get the value of uuid
+     */
+    public function setUuid(UUID $uuid)
+    {
+        $this->uuid = $uuid;
+
+        return $this;
     }
 
     /**
@@ -59,26 +78,6 @@ class Post
     }
 
     /**
-     * Get the value of id
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
      * Get the value of title
      */
     public function getTitle()
@@ -100,6 +99,6 @@ class Post
 
     public function __toString()
     {
-        return "Пользователь с логином " . $this->author->getLogin() . " написал статью $this->title следующего содержания:\n $this->text" . PHP_EOL;
+        return "Пользователь с логином " . $this->author->getUsername() . " написал статью $this->title следующего содержания:\n $this->text" . PHP_EOL;
     }
 }
