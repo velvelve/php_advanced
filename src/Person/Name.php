@@ -1,6 +1,6 @@
 <?php
 
-namespace Geekbrains\LevelTwo\Person;
+namespace GeekBrains\LevelTwo\Person;
 
 class Name
 {

@@ -6,53 +6,53 @@ use GeekBrains\LevelTwo\Person\Name;
 
 class User
 {
-    private int $id;
-    private Name $username;
-    private string $login;
+    private UUID $uuid;
+    private Name $name;
+    private string $username;
 
-    public function __construct(int $id, Name $username, string $login)
+    public function __construct(UUID $uuid, Name $name, string $username)
     {
-        $this->id = $id;
+        $this->uuid = $uuid;
+        $this->name = $name;
         $this->username = $username;
-        $this->login = $login;
+    }
+
+
+
+    /**
+     * Get the value of uuid
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
     }
 
     /**
-     * Get the value of id
+     * Get the value of uuid
      */
-    public function getId()
+    public function setUuid(UUID $uuid)
     {
-        return $this->id;
-    }
-
-    /**
-     * Set the value of id
-     *
-     * @return  self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
+        $this->uuid = $uuid;
 
         return $this;
     }
 
     /**
-     * Get the value of login
+     * Get the value of name
      */
-    public function getLogin()
+    public function getName()
     {
-        return $this->login;
+        return $this->name;
     }
 
     /**
-     * Set the value of login
+     * Set the value of name
      *
      * @return  self
      */
-    public function setLogin($login)
+    public function setName($name)
     {
-        $this->login = $login;
+        $this->name = $name;
 
         return $this;
     }
@@ -79,6 +79,6 @@ class User
 
     public function __toString()
     {
-        return "Пользователь с логином $this->login и именем $this->username" . PHP_EOL;
+        return "Пользователь с логином $this->username и именем $this->name" . PHP_EOL;
     }
 }
