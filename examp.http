@@ -1,0 +1,7 @@
+POST http://localhost:80/users/create
+
+{
+"first_name": "Raul",
+"last_name": "Gonsalez",
+"username": "Real_player"
+}

@@ -30,12 +30,14 @@
             "type": "php",
             "request": "launch",
             "runtimeArgs": [
+                "-dxdebug.remote_enable=1",
+                "-dxdebug.remote_autostart=1",
                 "-dxdebug.mode=debug",
                 "-dxdebug.start_with_request=yes",
                 "-S",
                 "localhost:0"
             ],
-            "program": "",
+            "program": "http.php",
             "cwd": "${workspaceRoot}",
             "port": 9003,
             "serverReadyAction": {
