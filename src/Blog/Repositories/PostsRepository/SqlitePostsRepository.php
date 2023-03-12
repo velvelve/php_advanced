@@ -47,6 +47,17 @@ class SqlitePostsRepository implements PostsRepositoryInteface
         return $this->getPost($statement, (string)$uuid);
     }
 
+    public function deletePost(UUID $uuid): void
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM posts WHERE uuid = :uuid'
+        );
+
+        $statement->execute([
+            ':uuid' =>  (string) $uuid
+        ]);
+    }
+
     private function getPost(\PDOStatement $statement, string $postUuid): Post
     {
 
