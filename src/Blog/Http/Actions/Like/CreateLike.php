@@ -3,7 +3,7 @@
 namespace GeekBrains\LevelTwo\Blog\Http\Actions\Like;
 
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
-use GeekBrains\LevelTwo\Blog\Exceptions\LikeAlreadyExist;
+use GeekBrains\LevelTwo\Blog\Exceptions\LikeAlreadyExists;
 use GeekBrains\LevelTwo\Blog\Http\Actions\ActionInterface;
 use GeekBrains\LevelTwo\Blog\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Http\Request;
@@ -32,7 +32,7 @@ class CreateLike implements ActionInterface
         }
         try {
             $this->likeRepositoryInterface->checkUserLikeForPostExists($postUuid, $userUuid);
-        } catch (LikeAlreadyExist $e) {
+        } catch (LikeAlreadyExists $e) {
             return new ErrorResponse($e->getMessage());
         }
         $newLikeUuid = UUID::random();

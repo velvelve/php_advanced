@@ -25,7 +25,6 @@ class Request
 
     public function jsonBody(): array
     {
-        xdebug_break();
         try {
             $data = json_decode(
                 $this->body,

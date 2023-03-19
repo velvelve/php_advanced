@@ -2,7 +2,7 @@
 
 namespace GeekBrains\LevelTwo\Blog\Repositories\LikeRepository;
 
-use GeekBrains\LevelTwo\Blog\Exceptions\LikeAlreadyExist;
+use GeekBrains\LevelTwo\Blog\Exceptions\LikeAlreadyExists;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeNotFoundException;
 use GeekBrains\LevelTwo\Blog\Like;
 use GeekBrains\LevelTwo\Blog\Repositories\LikeRepository\LikeRepositoryInterface;
@@ -32,7 +32,7 @@ class SqliteLikeRepository implements LikeRepositoryInterface
         ]);
     }
 
-    public function get(UUID $uuid): array
+    public function getByPostUuid(UUID $uuid): array
     {
         $statement = $this->connection->prepare(
             'SELECT * FROM likes WHERE postuuid = :uuid'
@@ -75,7 +75,7 @@ class SqliteLikeRepository implements LikeRepositoryInterface
         $isExisted = $statement->fetch();
 
         if ($isExisted) {
-            throw new LikeAlreadyExist('User like for this post already exist');
+            throw new LikeAlreadyExists('User like for this post already exist');
         }
     }
 }
