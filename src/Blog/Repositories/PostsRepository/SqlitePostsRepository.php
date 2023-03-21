@@ -7,15 +7,16 @@ use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInteface;
+use PDO;
+use Psr\Log\LoggerInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInteface
 {
 
-    private \PDO $pdo;
-
-    public function __construct(\PDO $pdo)
-    {
-        $this->pdo = $pdo;
+    public function __construct(
+        private PDO $pdo,
+        private LoggerInterface $logger,
+    ) {
     }
 
 
@@ -32,6 +33,7 @@ class SqlitePostsRepository implements PostsRepositoryInteface
             ':title' => $post->getTitle(),
             ':posttext' => $post->getText(),
         ]);
+        $this->logger->info("Post saved: " . $post->getUuid());
     }
 
     public function get(UUID $uuid): Post
@@ -63,9 +65,10 @@ class SqlitePostsRepository implements PostsRepositoryInteface
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
         if (false === $result) {
+            $this->logger->warning("Post with id $postUuid not found");
             throw new PostNotFoundException("Post with id $postUuid not found");
         }
-        $userRepository = new SqliteUsersRepository($this->pdo);
+        $userRepository = new SqliteUsersRepository($this->pdo, $this->logger);
 
         $user = $userRepository->get(new UUID($result['authoruuid']));
 

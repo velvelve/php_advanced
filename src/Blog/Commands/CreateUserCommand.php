@@ -9,52 +9,35 @@ use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Person\Name;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
+use Psr\Log\LoggerInterface;
 
 class CreateUserCommand
 {
     private UserRepositoryInterface $usersRepository;
+    private LoggerInterface $logger;
 
-    public function __construct(UserRepositoryInterface $userRepositoryInterface)
+    public function __construct(UserRepositoryInterface $userRepositoryInterface, LoggerInterface $logger)
     {
         $this->usersRepository  = $userRepositoryInterface;
+        $this->logger = $logger;
     }
 
     public function handle(Arguments $arguments): void
     {
+
+        $this->logger->info("Create user command started");
         $username = $arguments->get('username');
         if ($this->userExists($username)) {
             throw new CommandException("User already exists: $username");
         }
+        $uuid = UUID::random();
         $this->usersRepository->save(new User(
-            UUID::random(),
+            $uuid,
             new Name($arguments->get('first_name'), $arguments->get('last_name')),
             $username
         ));
+        $this->logger->info("User created: $uuid");
     }
-
-    // Преобразуем входной массив
-    // из предопределённой переменной $argv
-    //
-    // array(4) {
-    // [0]=>
-    // string(18) "/some/path/cli.php"
-    // [1]=>
-    // string(13) "username=ivan"
-    // [2]=>
-    // string(15) "first_name=Ivan"
-    // [3]=>
-    // string(17) "last_name=Nikitin"
-    // }
-    //
-    // в ассоциативный массив вида
-    // array(3) {
-    // ["username"]=>
-    // string(4) "ivan"
-    // ["first_name"]=>
-    // string(4) "Ivan"
-    // ["last_name"]=>
-    // string(7) "Nikitin"
-    //}
 
     private function userExists(string $username): bool
     {

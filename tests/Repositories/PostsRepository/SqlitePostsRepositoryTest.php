@@ -2,6 +2,7 @@
 
 namespace GeekBrains\LevelTwo\Blog\Repositories\PostsRepository;
 
+use GeekBrains\Blog\UnitTests\DummyLogger;
 use GeekBrains\LevelTwo\Blog\Exceptions\PostNotFoundException;
 use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\User;
@@ -24,7 +25,7 @@ class SqlitePostsRepositoryTest extends TestCase
 
         $statementMock->method('fetch')->willReturn(false);
 
-        $repo = new SqlitePostsRepository($connectionMock);
+        $repo = new SqlitePostsRepository($connectionMock, new DummyLogger());
 
         $repo->get(UUID::random());
     }
@@ -49,7 +50,7 @@ class SqlitePostsRepositoryTest extends TestCase
                 ':posttext' => 'Post tetxt',
             ]);
 
-        $repo = new SqlitePostsRepository($connectionStub);
+        $repo = new SqlitePostsRepository($connectionStub, new DummyLogger());
 
         $user = new User($testUuid, new Name('Ivan', 'Ivanov'), 'Just user');
 
@@ -84,7 +85,7 @@ class SqlitePostsRepositoryTest extends TestCase
 
         $connectionStub->method('prepare')->willReturn($statementMock);
 
-        $repo = new SqlitePostsRepository($connectionStub);
+        $repo = new SqlitePostsRepository($connectionStub, new DummyLogger());
 
         $post = $repo->get($testUuid);
 

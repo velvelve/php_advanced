@@ -8,13 +8,15 @@ use GeekBrains\LevelTwo\Blog\Like;
 use GeekBrains\LevelTwo\Blog\Repositories\LikeRepository\LikeRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 class SqliteLikeRepository implements LikeRepositoryInterface
 {
 
 
     public function __construct(
-        private PDO $connection
+        private PDO $connection,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -30,6 +32,7 @@ class SqliteLikeRepository implements LikeRepositoryInterface
             ':useruuid' => (string) $like->getUserId(),
             ':postuuid' => (string) $like->getPostId()
         ]);
+        $this->logger->info("Like saved: " . $like->getUuid());
     }
 
     public function getByPostUuid(UUID $uuid): array
@@ -45,6 +48,7 @@ class SqliteLikeRepository implements LikeRepositoryInterface
         $result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         if (!$result) {
+            $this->logger->warning("Like with id $uuid not found");
             throw new LikeNotFoundException('No likes for post with uuid = ' . $uuid);
         }
 

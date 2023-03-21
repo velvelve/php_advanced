@@ -1,4 +1,4 @@
-POST http://127.0.0.1:80/posts/like
+POST http://127.0.0.1:80/posts/lik
 
 {
 "useruuid": "d7401bda-54b3-403f-824c-df0a203e544f",

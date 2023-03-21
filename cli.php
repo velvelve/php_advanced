@@ -1,26 +1,21 @@
 <?php
 
 use GeekBrains\LevelTwo\Blog\Commands\Arguments;
-use GeekBrains\LevelTwo\Blog\Comment;
+use GeekBrains\LevelTwo\Blog\Commands\CreateUserCommand;
 use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
-use GeekBrains\LevelTwo\Blog\Exceptions\CommandException;
-use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
-use GeekBrains\LevelTwo\Blog\User;
-use GeekBrains\LevelTwo\Blog\UUID;
-use GeekBrains\LevelTwo\Person\Name;
-
-include __DIR__ . '/vendor/autoload.php';
-
+use Psr\Log\LoggerInterface;
 
 $container = require __DIR__ . '/bootstrap.php';
 // При помощи контейнера создаём команду
 $command = $container->get(CreateUserCommand::class);
+$logger = $container->get(LoggerInterface::class);
 try {
     $command->handle(Arguments::fromArgv($argv));
 } catch (AppException $e) {
+    $logger->error($e->getMessage(), ['exception' => $e]);
     echo "{$e->getMessage()}\n";
 }
 
