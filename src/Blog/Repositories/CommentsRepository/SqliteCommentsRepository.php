@@ -8,15 +8,17 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\CommentsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
+use PDO;
+use Psr\Log\LoggerInterface;
 
 class SqliteCommentsRepository implements CommentsRepositoryInterface
 {
 
-    private \PDO $pdo;
 
-    public function __construct(\PDO $pdo)
-    {
-        $this->pdo = $pdo;
+    public function __construct(
+        private PDO $pdo,
+        private LoggerInterface $logger,
+    ) {
     }
 
 
@@ -33,6 +35,7 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
             ':postuuid' => $comment->getPost()->getUuid(),
             ':comment' => $comment->getText(),
         ]);
+        $this->logger->info("Comment saved: " . $comment->getUuid());
     }
 
     public function get(UUID $uuid): Comment
@@ -53,12 +56,13 @@ class SqliteCommentsRepository implements CommentsRepositoryInterface
 
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
         if (false === $result) {
-            throw new PostNotFoundException("Post with id $commentUuid not found");
+            $this->logger->warning("Comment with id $commentUuid not found");
+            throw new PostNotFoundException("Comment with id $commentUuid not found");
         }
-        $userRepository = new SqliteUsersRepository($this->pdo);
+        $userRepository = new SqliteUsersRepository($this->pdo, $this->logger);
         $user = $userRepository->get(new UUID($result['authoruuid']));
 
-        $postRepository = new SqlitePostsRepository($this->pdo);
+        $postRepository = new SqlitePostsRepository($this->pdo, $this->logger);
         $post = $postRepository->get(new UUID($result['postuuid']));
         return new Comment(new UUID($result['uuid']), $user, $post, $result['comment']);
     }

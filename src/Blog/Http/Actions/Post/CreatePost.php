@@ -6,6 +6,7 @@ use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
 use GeekBrains\LevelTwo\Blog\Exceptions\InvalidArgumentException;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Blog\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Blog\Http\Auth\IdentificationInterface;
 use GeekBrains\LevelTwo\Blog\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Http\Request;
 use GeekBrains\LevelTwo\Blog\Http\Response;
@@ -14,26 +15,20 @@ use GeekBrains\LevelTwo\Blog\Post;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInteface;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UserRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\UUID;
+use Psr\Log\LoggerInterface;
 
 class CreatePost implements ActionInterface
 {
     public function __construct(
         private PostsRepositoryInteface $postsRepository,
-        private UserRepositoryInterface $usersRepository,
+        private IdentificationInterface $identificationInterface,
+        private LoggerInterface $logger,
     ) {
     }
     public function handle(Request $request): Response
     {
-        try {
-            $authorUuid = new UUID($request->jsonBodyField('author_uuid'));
-        } catch (HttpException | InvalidArgumentException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
-        try {
-            $author = $this->usersRepository->get($authorUuid);
-        } catch (UserNotFoundException $e) {
-            return new ErrorResponse($e->getMessage());
-        }
+
+        $author = $this->identificationInterface->user($request);
 
         $newPostUuid = UUID::random();
         try {

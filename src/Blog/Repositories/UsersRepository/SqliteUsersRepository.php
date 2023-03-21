@@ -6,14 +6,16 @@ use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
 use GeekBrains\LevelTwo\Person\Name;
+use PDO;
+use Psr\Log\LoggerInterface;
 
 class SqliteUsersRepository implements UserRepositoryInterface
 {
-    private \PDO $pdo;
 
-    public function __construct(\PDO $pdo)
-    {
-        $this->pdo = $pdo;
+    public function __construct(
+        private PDO $pdo,
+        private LoggerInterface $logger,
+    ) {
     }
 
     public function save(User $user): void
@@ -30,6 +32,7 @@ class SqliteUsersRepository implements UserRepositoryInterface
             ':first_name' => $user->getName()->getFirstName(),
             ':last_name' => $user->getName()->getLastName(),
         ]);
+        $this->logger->info("User saved: " . $user->getUuid());
     }
 
     public function get(UUID $uuid): User
@@ -42,6 +45,7 @@ class SqliteUsersRepository implements UserRepositoryInterface
         ]);
         $result = $statement->fetch(\PDO::FETCH_ASSOC);
         if (false === $result) {
+            $this->logger->warning("User with id $uuid not found");
             throw new UserNotFoundException("User with id $uuid not found");
         }
 

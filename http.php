@@ -10,8 +10,11 @@ use GeekBrains\LevelTwo\Blog\Http\Actions\User\CreateUser;
 use GeekBrains\LevelTwo\Blog\Http\Actions\User\FindByUsername;
 use GeekBrains\LevelTwo\Blog\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Http\Request;
+use Psr\Log\LoggerInterface;
 
 $container = require __DIR__ . '/bootstrap.php';
+
+$logger = $container->get(LoggerInterface::class);
 
 $request = new Request(
     $_GET,
@@ -47,13 +50,13 @@ $routes = [
     ],
 ];
 
-if (!array_key_exists($method, $routes)) {
-    (new ErrorResponse('Not found method'))->send();
-    return;
-}
-
-if (!array_key_exists($path, $routes[$method])) {
-    (new ErrorResponse('Not found path'))->send();
+if (
+    !array_key_exists($method, $routes)
+    || !array_key_exists($path, $routes[$method])
+) {
+    $message = "Route not found: $method $path";
+    $logger->notice($message);
+    (new ErrorResponse($message))->send();
     return;
 }
 
@@ -63,6 +66,7 @@ try {
     $action = $container->get($actionClassName);
     $response = $action->handle($request);
 } catch (Exception $e) {
+    $logger->error($e->getMessage(), ['exception' => $e]);
     (new ErrorResponse($e->getMessage()))->send();
 }
 

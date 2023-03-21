@@ -2,6 +2,7 @@
 
 namespace GeekBrains\LevelTwo\Blog\Commands;
 
+use GeekBrains\Blog\UnitTests\DummyLogger;
 use GeekBrains\LevelTwo\Blog\Exceptions\ArgumentsException;
 use GeekBrains\LevelTwo\Blog\Exceptions\CommandException;
 use GeekBrains\LevelTwo\Blog\Exceptions\UserNotFoundException;
@@ -15,7 +16,8 @@ class CreateUserCommandTest extends TestCase
 {
     public function testItThrowsAnExceptionWhenUserAlreadyExists(): void
     {
-        $command = new CreateUserCommand(new DummyUsersRepository());
+
+        $command = new CreateUserCommand(new DummyUsersRepository(), new DummyLogger());
 
         $this->expectException(CommandException::class);
 
@@ -27,7 +29,7 @@ class CreateUserCommandTest extends TestCase
     public function testItRequiresFirstName(): void
     {
 
-        $command = new CreateUserCommand($this->makeUsersRepository());
+        $command = new CreateUserCommand($this->makeUsersRepository(), new DummyLogger());
 
         $this->expectException(ArgumentsException::class);
 
@@ -38,7 +40,7 @@ class CreateUserCommandTest extends TestCase
 
     public function testItRequiresLastName(): void
     {
-        $command = new CreateUserCommand($this->makeUsersRepository());
+        $command = new CreateUserCommand($this->makeUsersRepository(), new DummyLogger());
 
         $this->expectException(ArgumentsException::class);
 
@@ -74,7 +76,7 @@ class CreateUserCommandTest extends TestCase
             }
         };
 
-        $command = new CreateUserCommand($usersRepository);
+        $command = new CreateUserCommand($usersRepository, new DummyLogger());
 
         $command->handle(new Arguments([
             'username' => 'Ivan',
