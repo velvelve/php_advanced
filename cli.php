@@ -19,23 +19,4 @@ $usersRepository = new SqliteUsersRepository($connection);
 $postRepository = new SqlitePostsRepository($connection);
 $commentRepository = new SqliteCommentsRepository($connection);
 
-try {
-    $user = new User(UUID::random(), new Name('Alex', 'Ivanov'), 'Admin');
-
-    $usersRepository->save($user);
-
-    $postUuid = UUID::random();
-
-    $post = new Post($postUuid, $user, 'Title', 'Post text');
-
-    $postRepository->save($post);
-
-    $commentUuid = UUID::random();
-
-    $comment = new Comment($commentUuid, $user, $post, "Comment text");
-
-    $commentRepository->save($comment);
-    echo $commentRepository->get($commentUuid);
-} catch (CommandException $e) {
-    echo "{$e->getMessage()}\n";
-}
+echo "Hello world";
