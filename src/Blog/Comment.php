@@ -5,35 +5,33 @@ namespace GeekBrains\LevelTwo\Blog;
 class Comment
 {
 
-    private int $id;
+    private UUID $uuid;
     private User $author;
     private Post $post;
     private string $text;
 
-    public function __construct(int $id, User $author, Post $post, string $text)
+    public function __construct(UUID $uuid, User $author, Post $post, string $text)
     {
-        $this->id = $id;
+        $this->uuid = $uuid;
         $this->author = $author;
         $this->post = $post;
         $this->text = $text;
     }
 
     /**
-     * Get the value of id
+     * Get the value of uuid
      */
-    public function getId()
+    public function getUuid()
     {
-        return $this->id;
+        return $this->uuid;
     }
 
     /**
-     * Set the value of id
-     *
-     * @return  self
+     * Get the value of uuid
      */
-    public function setId($id)
+    public function setUuid(UUID $uuid)
     {
-        $this->id = $id;
+        $this->uuid = $uuid;
 
         return $this;
     }
@@ -100,6 +98,6 @@ class Comment
 
     public function __toString()
     {
-        return "Пользователь с логином " . $this->author->getLogin() . " написал комментарий к статье " . $this->post->getTitle() . " следующего содержания:\n $this->text" . PHP_EOL;
+        return "Пользователь с логином " . $this->author->getUsername() . " написал комментарий к статье " . $this->post->getTitle() . " следующего содержания:\n $this->text" . PHP_EOL;
     }
 }
