@@ -1,5 +1,9 @@
 <?php
 
+use Faker\Provider\Lorem;
+use Faker\Provider\ru_RU\Internet;
+use Faker\Provider\ru_RU\Person;
+use Faker\Provider\ru_RU\Text;
 use GeekBrains\LevelTwo\Blog\Container\DIContainer;
 use GeekBrains\LevelTwo\Blog\Http\Auth\BearerTokenAuthentication;
 use GeekBrains\LevelTwo\Blog\Http\Auth\PasswordAuthentication;
@@ -91,5 +95,18 @@ $container->bind(
     LikeRepositoryInterface::class,
     SqliteLikeRepository::class
 );
+
+$faker = new \Faker\Generator();
+
+$faker->addProvider(new Person($faker));
+$faker->addProvider(new Text($faker));
+$faker->addProvider(new Internet($faker));
+$faker->addProvider(new Lorem($faker));
+
+$container->bind(
+    \Faker\Generator::class,
+    $faker
+);
+
 
 return $container;

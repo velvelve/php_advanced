@@ -1,15 +1,9 @@
 <?php
 
-use GeekBrains\LevelTwo\Blog\Commands\Arguments;
-use GeekBrains\LevelTwo\Blog\Commands\CreateUserCommand;
+use GeekBrains\LevelTwo\Blog\Commands\FakeData\PopulateDB;
 use GeekBrains\LevelTwo\Blog\Commands\Posts\DeletePost;
 use GeekBrains\LevelTwo\Blog\Commands\Users\CreateUser;
 use GeekBrains\LevelTwo\Blog\Commands\Users\UpdateUser;
-use GeekBrains\LevelTwo\Blog\Exceptions\AppException;
-use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
-use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
-use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 
 $container = require __DIR__ . '/bootstrap.php';
@@ -18,10 +12,12 @@ $commandsClasses = [
     CreateUser::class,
     DeletePost::class,
     UpdateUser::class,
+    PopulateDB::class,
+
 ];
 foreach ($commandsClasses as $commandClass) {
     $command = $container->get($commandClass);
     $application->add($command);
 }
-// Запускаем приложение
+
 $application->run();
