@@ -8,6 +8,7 @@ use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\SqliteUsersRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInteface;
 use PDO;
+use PDOException;
 use Psr\Log\LoggerInterface;
 
 class SqlitePostsRepository implements PostsRepositoryInteface
@@ -51,13 +52,21 @@ class SqlitePostsRepository implements PostsRepositoryInteface
 
     public function deletePost(UUID $uuid): void
     {
-        $statement = $this->pdo->prepare(
-            'DELETE FROM posts WHERE uuid = :uuid'
-        );
+        try {
+            $statement = $this->pdo->prepare(
+                'DELETE FROM posts WHERE uuid = :uuid'
+            );
 
-        $statement->execute([
-            ':uuid' =>  (string) $uuid
-        ]);
+            $statement->execute([
+                ':uuid' =>  (string) $uuid
+            ]);
+        } catch (PDOException $e) {
+            throw new PostNotFoundException(
+                $e->getMessage(),
+                (int)$e->getCode(),
+                $e
+            );
+        }
     }
 
     private function getPost(\PDOStatement $statement, string $postUuid): Post

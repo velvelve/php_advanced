@@ -7,6 +7,8 @@ use GeekBrains\LevelTwo\Blog\Exceptions\AuthException;
 use GeekBrains\LevelTwo\Blog\Exceptions\AuthTokenNotFoundException;
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
 use GeekBrains\LevelTwo\Blog\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Blog\Http\Auth\TokenAuthenticationInterface;
+use GeekBrains\LevelTwo\Blog\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Http\Request;
 use GeekBrains\LevelTwo\Blog\Http\Response;
 use GeekBrains\LevelTwo\Blog\Http\SuccessfullResponse;
@@ -19,11 +21,19 @@ class LogOut implements ActionInterface
 
 
     public function __construct(
-        private AuthTokensRepositoryInterface $authTokensRepository
+        private AuthTokensRepositoryInterface $authTokensRepository,
+        private TokenAuthenticationInterface $authentication,
     ) {
     }
     public function handle(Request $request): Response
     {
+
+        try {
+            $this->authentication->user($request);
+        } catch (AuthException $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+
         try {
             $header = $request->header('Authorization');
         } catch (HttpException $e) {
@@ -42,7 +52,7 @@ class LogOut implements ActionInterface
             throw new AuthException("Bad token: [$token]");
         }
 
-        $authToken->setExpiresOn(new DateTimeImmutable());
+        $authToken->setExpiresOn(new DateTimeImmutable("now"));
 
         $this->authTokensRepository->save($authToken);
 
