@@ -2,9 +2,11 @@
 
 namespace GeekBrains\LevelTwo\Blog\Http\Actions\Like;
 
+use GeekBrains\LevelTwo\Blog\Exceptions\AuthException;
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
 use GeekBrains\LevelTwo\Blog\Exceptions\LikeAlreadyExists;
 use GeekBrains\LevelTwo\Blog\Http\Actions\ActionInterface;
+use GeekBrains\LevelTwo\Blog\Http\Auth\TokenAuthenticationInterface;
 use GeekBrains\LevelTwo\Blog\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Http\Request;
 use GeekBrains\LevelTwo\Blog\Http\Response;
@@ -17,7 +19,8 @@ class CreateLike implements ActionInterface
 {
 
     public function __construct(
-        private LikeRepositoryInterface $likeRepositoryInterface
+        private LikeRepositoryInterface $likeRepositoryInterface,
+        private TokenAuthenticationInterface $authentication,
     ) {
     }
 
@@ -26,12 +29,18 @@ class CreateLike implements ActionInterface
     {
         try {
             $postUuid = $request->jsonBodyField('postuuid');
-            $userUuid = $request->jsonBodyField('useruuid');
         } catch (HttpException $e) {
             return new ErrorResponse($e->getMessage());
         }
+
         try {
-            $this->likeRepositoryInterface->checkUserLikeForPostExists($postUuid, $userUuid);
+            $author = $this->authentication->user($request);
+        } catch (AuthException $e) {
+            return new ErrorResponse($e->getMessage());
+        }
+
+        try {
+            $this->likeRepositoryInterface->checkUserLikeForPostExists($postUuid, $author->getUuid());
         } catch (LikeAlreadyExists $e) {
             return new ErrorResponse($e->getMessage());
         }
@@ -40,8 +49,9 @@ class CreateLike implements ActionInterface
         $like = new Like(
             $newLikeUuid,
             new UUID($postUuid),
-            new UUID($userUuid)
+            $author->getUuid()
         );
+
         $this->likeRepositoryInterface->save($like);
         return new SuccessfullResponse([
             'uuid' => (string) $newLikeUuid

@@ -9,7 +9,7 @@ use GeekBrains\LevelTwo\Blog\Http\Request;
 use GeekBrains\LevelTwo\Blog\Repositories\UsersRepository\UserRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\User;
 
-class JsonBodyUsernameIdentification implements AuthenticationInterface
+class PasswordAuthentication implements PasswordAuthenticationInterface
 {
     public function __construct(
         private UserRepositoryInterface $usersRepository
@@ -23,9 +23,21 @@ class JsonBodyUsernameIdentification implements AuthenticationInterface
             throw new AuthException($e->getMessage());
         }
         try {
-            return $this->usersRepository->getByUsername($username);
+            $user = $this->usersRepository->getByUsername($username);
         } catch (UserNotFoundException $e) {
             throw new AuthException($e->getMessage());
         }
+
+        try {
+            $password = $request->jsonBodyField('password');
+        } catch (HttpException $e) {
+            throw new AuthException($e->getMessage());
+        }
+
+        if (!$user->checkPassword($password)) {
+            throw new AuthException('Wrong password');
+        }
+
+        return $user;
     }
 }

@@ -1,6 +1,6 @@
-POST http://127.0.0.1:80/posts/lik
+POST http://127.0.0.1:80/posts/like
+Authorization: Bearer 19ac74e4efac2d71919362a3261903b99357e802c23f8334bc61b926fdf32cc9ac29d055509151b3
 
 {
-"useruuid": "d7401bda-54b3-403f-824c-df0a203e544f",
-"postuuid": "7d0faf0e-bb2b-42c8-b4cb-a2817c0dd50a"
+    "postuuid": "bf0ff237-50a5-4d7d-a08d-4a300c3c0d7a"
 }
