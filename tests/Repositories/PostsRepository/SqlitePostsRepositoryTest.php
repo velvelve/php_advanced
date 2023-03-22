@@ -52,7 +52,7 @@ class SqlitePostsRepositoryTest extends TestCase
 
         $repo = new SqlitePostsRepository($connectionStub, new DummyLogger());
 
-        $user = new User($testUuid, new Name('Ivan', 'Ivanov'), 'Just user');
+        $user = new User($testUuid, new Name('Ivan', 'Ivanov'), 'Just user', 'test password');
 
         $repo->save(
             new Post(
@@ -79,6 +79,7 @@ class SqlitePostsRepositoryTest extends TestCase
             'title' => 'Title',
             'posttext' => 'Post text',
             'username' => 'ivan123',
+            'password' => 'test',
             'first_name' => 'Ivan',
             'last_name' => 'Ivanov'
         ]);

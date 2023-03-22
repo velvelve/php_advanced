@@ -22,13 +22,14 @@ class SqliteUsersRepository implements UserRepositoryInterface
     {
 
         $statement = $this->pdo->prepare(
-            'INSERT INTO users (uuid, username, first_name, last_name)
-            VALUES (:uuid, :username, :first_name, :last_name)
+            'INSERT INTO users (uuid, username, password, first_name, last_name)
+            VALUES (:uuid, :username, :password, :first_name, :last_name)
             ON CONFLICT (uuid) DO UPDATE SET first_name = :first_name, last_name = :last_name'
         );
         $statement->execute([
             ':uuid' => $user->getUuid(),
             ':username' => $user->getUsername(),
+            ':password' => $user->getHashedPassword(),
             ':first_name' => $user->getName()->getFirstName(),
             ':last_name' => $user->getName()->getLastName(),
         ]);
@@ -49,7 +50,15 @@ class SqliteUsersRepository implements UserRepositoryInterface
             throw new UserNotFoundException("User with id $uuid not found");
         }
 
-        return new User(new UUID($result['uuid']), new Name($result['first_name'], $result['last_name']), $result['username']);
+        return new User(
+            new UUID($result['uuid']),
+            new Name(
+                $result['first_name'],
+                $result['last_name']
+            ),
+            $result['username'],
+            $result['password']
+        );
     }
 
     public function getByUsername(string $username): User
@@ -65,6 +74,14 @@ class SqliteUsersRepository implements UserRepositoryInterface
             throw new UserNotFoundException("User with username $username not found");
         }
 
-        return new User(new UUID($result['uuid']), new Name($result['first_name'], $result['last_name']), $result['username']);
+        return new User(
+            new UUID($result['uuid']),
+            new Name(
+                $result['first_name'],
+                $result['last_name']
+            ),
+            $result['username'],
+            $result['password']
+        );
     }
 }

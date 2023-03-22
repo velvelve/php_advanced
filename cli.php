@@ -22,8 +22,8 @@ try {
 $connection = new PDO('sqlite:' . __DIR__ . '/blog.sqlite');
 
 
-$usersRepository = new SqliteUsersRepository($connection);
-$postRepository = new SqlitePostsRepository($connection);
-$commentRepository = new SqliteCommentsRepository($connection);
+$usersRepository = new SqliteUsersRepository($connection, $logger);
+$postRepository = new SqlitePostsRepository($connection, $logger);
+$commentRepository = new SqliteCommentsRepository($connection, $logger);
 
 echo "Hello world";

@@ -1,6 +1,8 @@
 <?php
 
 use GeekBrains\LevelTwo\Blog\Exceptions\HttpException;
+use GeekBrains\LevelTwo\Blog\Http\Actions\Auth\LogIn;
+use GeekBrains\LevelTwo\Blog\Http\Actions\Auth\LogOut;
 use GeekBrains\LevelTwo\Blog\Http\Actions\Like\CreateLike;
 use GeekBrains\LevelTwo\Blog\Http\Actions\Post\AddComment;
 use GeekBrains\LevelTwo\Blog\Http\Actions\Post\CreatePost;
@@ -40,6 +42,8 @@ $routes = [
         '/posts/show' => FindByUuid::class,
     ],
     'POST' => [
+        '/login' => LogIn::class,
+        '/logout' => LogOut::class,
         '/posts/create' => CreatePost::class,
         '/users/create' => CreateUser::class,
         '/posts/comment' => AddComment::class,

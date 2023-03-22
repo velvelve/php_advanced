@@ -11,7 +11,7 @@ use GeekBrains\LevelTwo\Blog\User;
 use GeekBrains\LevelTwo\Blog\UUID;
 use InvalidArgumentException;
 
-class JsonBodyUuidIdentification implements IdentificationInterface
+class JsonBodyUuidIdentification implements AuthenticationInterface
 {
     public function __construct(
         private UserRepositoryInterface $usersRepository

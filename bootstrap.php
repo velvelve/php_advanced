@@ -1,9 +1,12 @@
 <?php
-// Подключаем автозагрузчик Composer
 
 use GeekBrains\LevelTwo\Blog\Container\DIContainer;
-use GeekBrains\LevelTwo\Blog\Http\Auth\IdentificationInterface;
-use GeekBrains\LevelTwo\Blog\Http\Auth\JsonBodyUuidIdentification;
+use GeekBrains\LevelTwo\Blog\Http\Auth\BearerTokenAuthentication;
+use GeekBrains\LevelTwo\Blog\Http\Auth\PasswordAuthentication;
+use GeekBrains\LevelTwo\Blog\Http\Auth\PasswordAuthenticationInterface;
+use GeekBrains\LevelTwo\Blog\Http\Auth\TokenAuthenticationInterface;
+use GeekBrains\LevelTwo\Blog\Repositories\AuthTokenRepository\AuthTokensRepositoryInterface;
+use GeekBrains\LevelTwo\Blog\Repositories\AuthTokenRepository\SqliteAuthTokensRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\CommentsRepositoryInterface;
 use GeekBrains\LevelTwo\Blog\Repositories\CommentsRepository\SqliteCommentsRepository;
 use GeekBrains\LevelTwo\Blog\Repositories\LikeRepository\LikeRepositoryInterface;
@@ -54,10 +57,20 @@ $container->bind(
 );
 
 $container->bind(
-    IdentificationInterface::class,
-    JsonBodyUuidIdentification::class
+    PasswordAuthenticationInterface::class,
+    PasswordAuthentication::class
 );
 
+$container->bind(
+    TokenAuthenticationInterface::class,
+    BearerTokenAuthentication::class
+);
+
+
+$container->bind(
+    AuthTokensRepositoryInterface::class,
+    SqliteAuthTokensRepository::class
+);
 
 $container->bind(
     PostsRepositoryInteface::class,
