@@ -9,6 +9,7 @@ use GeekBrains\LevelTwo\Blog\Http\ErrorResponse;
 use GeekBrains\LevelTwo\Blog\Http\Request;
 use GeekBrains\LevelTwo\Blog\Http\Response;
 use GeekBrains\LevelTwo\Blog\Http\SuccessfullResponse;
+use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\PostsRepositoryInteface;
 use GeekBrains\LevelTwo\Blog\Repositories\PostsRepository\SqlitePostsRepository;
 use GeekBrains\LevelTwo\Blog\UUID;
 use InvalidArgumentException;
@@ -16,7 +17,7 @@ use InvalidArgumentException;
 class DeletePost implements ActionInterface
 {
     public function __construct(
-        private SqlitePostsRepository $postRepository
+        private PostsRepositoryInteface $postRepository
     ) {
     }
     public function handle(Request $request): Response

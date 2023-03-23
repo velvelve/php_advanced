@@ -1,7 +1,6 @@
-POST http://127.0.0.1:80/posts/comment
+POST http://127.0.0.1:80/posts/like
 
 {
-"author_uuid": "d7401bda-54b3-403f-824c-df0a203e544f",
-"post_uuid": "7d0faf0e-bb2b-42c8-b4cb-a2817c0dd50a",
-"text": "Comment added from server"
+"useruuid": "d7401bda-54b3-403f-824c-df0a203e544f",
+"postuuid": "7d0faf0e-bb2b-42c8-b4cb-a2817c0dd50a"
 }

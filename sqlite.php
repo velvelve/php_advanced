@@ -21,3 +21,9 @@ $connection->exec("CREATE TABLE IF NOT EXISTS posts (
     title TEXT NOT NUll,
     posttext TEXT NOT NULL
 )");
+
+$connection->exec("CREATE TABLE IF NOT EXISTS likes (
+    uuid TEXT NOT NULL CONSTRAINT uuid_primary_key PRIMARY KEY,
+    useruuid TEXT NOT NUll,
+    postuuid TEXT NOT NUll
+)");
